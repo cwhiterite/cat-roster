@@ -35,26 +35,33 @@ npm start        # builds and runs the CLI
 
 ## Usage
 
-The roster is in-memory: every run starts empty, so `add` is mainly useful to
-preview the format until persistence lands.
+Two modes:
+
+- **Interactive (default):** `npm start` (or `node dist/index.js`) opens a
+  `cat> ` prompt that stays open for the session. Type commands, use `exit`,
+  `quit`, or Ctrl+C to leave. Errors print and the prompt comes back.
+- **One-shot:** pass a command as arguments, e.g. `npm start -- list`. Prints
+  the result and exits (non-zero on errors).
+
+Both modes read and write the roster in `data/roster.json` (created on first
+`add`), so cats persist between runs.
 
 ```powershell
-npm start                                            # help text
+npm start                                   # interactive session
 npm start -- add Miso --breed Tabby --personality "sweet chaos" --activities "boxes,sunbeams" --drama 4
-npm start -- list                                    # "(no cats yet)" in a fresh run
+npm start -- list
 npm start -- show Miso
 ```
 
-To call the compiled CLI directly (no npm passthrough):
-
-```powershell
-node dist/index.js add Miso --breed Tabby --personality "sweet chaos" --activities "boxes,sunbeams" --drama 4
-```
+Commands (identical in both modes):
 
 - `list` — one line per cat, or `(no cats yet)`.
 - `show <name>` — one cat's summary, case-insensitive name match.
 - `add <name> --breed <b> --personality <p> [--activities a,b] [--drama 1-5]` —
-  drama defaults to 3; invalid input prints an error to stderr and exits 1.
+  drama defaults to 3; invalid input prints an error and is rejected.
+- `help` — this usage text.
+
+In the interactive session, quoted values work: `add Miso --personality "sweet chaos"`.
 
 ## Repo layout
 
@@ -73,8 +80,9 @@ node dist/index.js add Miso --breed Tabby --personality "sweet chaos" --activiti
 | ---- | ------ |
 | Scaffold: TypeScript + Vitest, docs filled in, ADR 0002 (stack choice) | Done |
 | Cat model: fields, defaults, validation (`parseDramaLevel`, `makeCat`) | Done |
-| CLI commands: add / list / show (in-memory, resets each run) | Done |
-| JSON persistence (`data/roster.json`) | Planned |
+| CLI commands: add / list / show | Done |
+| JSON persistence (`data/roster.json`) | Done |
+| Interactive REPL (`cat-roster` with no args) | Done |
 
 New items start with a blank Status until they're specced.
 
