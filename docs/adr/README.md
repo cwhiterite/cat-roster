@@ -15,4 +15,4 @@ this index, so two branches can't take the same number.
 | #    | Title | Status |
 | ---- | ----- | ------ |
 | 0001 | [Parallel agents: worktrees, doc fragments, one-at-a-time merges](0001-parallel-agents-workflow.md) | Accepted |
-| <!-- TODO(project): next ADR, e.g. 0002 Choose stack / database --> | | |
+| 0002 | [Stack: Node + TypeScript + Vitest](0002-stack-choice.md) | Accepted |
