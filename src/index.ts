@@ -1,23 +1,14 @@
-import { type Cat, rosterSummary } from "./cat.js";
+import { execute, parseCommand } from "./cli.js";
 
-// ESM: relative imports use the `.js` extension even though the file is `.ts`
-// (NodeNext module resolution).
+const argv = process.argv.slice(2);
 
-const cats: readonly Cat[] = [
-  {
-    name: "Miso",
-    breed: "Tabby",
-    personality: "sweet chaos",
-    favoriteActivities: ["knocking things off shelves", "sunbeams"],
-    dramaLevel: 4,
-  },
-  {
-    name: "Wasabi",
-    breed: "Siamese",
-    personality: "dignified",
-    favoriteActivities: ["yelling at 5am", "supervision"],
-    dramaLevel: 2,
-  },
-];
+const parsed = parseCommand(argv);
+if (parsed.status === "error") {
+  console.error(parsed.message);
+  process.exit(1);
+}
 
-console.log(rosterSummary(cats));
+// The roster is in-memory: every run starts empty (persistence is planned).
+const result = execute(parsed.command, []);
+console.log(result.output);
+process.exit(result.exitCode);

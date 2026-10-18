@@ -33,6 +33,29 @@ npm start        # builds and runs the CLI
 | Test (one file)  | `npx vitest run test/cat.test.ts`        |
 | Typecheck        | `npm run typecheck`                      |
 
+## Usage
+
+The roster is in-memory: every run starts empty, so `add` is mainly useful to
+preview the format until persistence lands.
+
+```powershell
+npm start                                            # help text
+npm start -- add Miso --breed Tabby --personality "sweet chaos" --activities "boxes,sunbeams" --drama 4
+npm start -- list                                    # "(no cats yet)" in a fresh run
+npm start -- show Miso
+```
+
+To call the compiled CLI directly (no npm passthrough):
+
+```powershell
+node dist/index.js add Miso --breed Tabby --personality "sweet chaos" --activities "boxes,sunbeams" --drama 4
+```
+
+- `list` — one line per cat, or `(no cats yet)`.
+- `show <name>` — one cat's summary, case-insensitive name match.
+- `add <name> --breed <b> --personality <p> [--activities a,b] [--drama 1-5]` —
+  drama defaults to 3; invalid input prints an error to stderr and exits 1.
+
 ## Repo layout
 
 | Path                     | What                                                        |
@@ -47,8 +70,8 @@ npm start        # builds and runs the CLI
 ## Status
 
 - [x] Scaffold: TypeScript + Vitest, docs filled in, ADR 0002 (stack choice)
-- [ ] Finalize the cat model (fields, defaults, validation)
-- [ ] CLI commands: add / list / show
+- [x] Cat model: fields, defaults, validation (`parseDramaLevel`, `makeCat`)
+- [x] CLI commands: add / list / show (in-memory, resets each run)
 - [ ] JSON persistence (`data/roster.json`)
 
 ## Day-to-day
