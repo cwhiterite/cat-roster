@@ -5,21 +5,26 @@
 
 ## Project
 
-<!-- TODO(project): One paragraph. What is this, who is it for, what phase is it in? -->
+Cat Roster is a single-user TypeScript CLI for tracking household cats — name,
+breed, personality, favorite activities, and drama level. Runs on Node 22+, no
+servers or database. **Phase:** scaffolded (stack + docs in place); the cat
+model, CLI commands, and JSON persistence are next.
 
 ## Stack
 
-<!-- TODO(project): Language(s), framework, database, test runner, package manager. -->
+TypeScript (Node 22+, ESM, strict) · Vitest for tests · npm for packages.
+No database yet — roster is in-memory, JSON file persistence planned.
+See ADR 0002 for the stack decision.
 
 ## Commands
 
 | Task             | Command                    |
 | ---------------- | -------------------------- |
-| Install          | <!-- TODO(project) -->     |
-| Run              | <!-- TODO(project) -->     |
-| Test (all)       | <!-- TODO(project) -->     |
-| Test (one file)  | <!-- TODO(project) -->     |
-| Lint / format    | <!-- TODO(project) -->     |
+| Install          | `npm install`              |
+| Run              | `npm start`                |
+| Test (all)       | `npm test`                 |
+| Test (one file)  | `npx vitest run test/cat.test.ts` |
+| Lint / format    | `npm run typecheck` (no linter yet) |
 
 ## Where things live
 
@@ -32,8 +37,8 @@
 | `docs/adr/`              | Decisions and the reasoning behind them.                    |
 | `.agents/skills/`        | `plan`, `build`, `review`, `sync-docs`, `merge`, `consolidate-docs`. |
 | `scripts/`               | Helper scripts (e.g. `agent-worktree.ps1`).                 |
-| <!-- TODO(project) -->   | Source code                                                 |
-| <!-- TODO(project) -->   | Tests                                                       |
+| `src/`                   | Source code: CLI entry (`index.ts`), domain model (`cat.ts`). |
+| `test/`                  | Vitest tests, one file per module (`cat.test.ts`).          |
 
 ## Workflow
 
@@ -63,4 +68,8 @@ load skills automatically, open and follow the file directly.
 
 ## Conventions
 
-<!-- TODO(project): Naming, formatting, error handling, logging, folder layout, etc. -->
+ESM (`"type": "module"`), strict TypeScript, named exports only. Relative
+imports use `.js` extensions (NodeNext), e.g. `import "./cat.js"`. Tests live
+in `test/`, one file per module, named `*.test.ts`. No linter yet —
+`npm run typecheck` is the gate; keep formatting tidy. Vitest transpiles without
+typechecking, so run both `npm test` and `npm run typecheck`.

@@ -1,0 +1,21 @@
+{
+  "name": "cat-roster",
+  "version": "0.1.0",
+  "description": "A TypeScript CLI for tracking cats: name, breed, personality, favorite activities, and drama level.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.test.json"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}

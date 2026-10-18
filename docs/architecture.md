@@ -6,39 +6,40 @@
 
 ## Overview
 
-<!-- TODO(project): 2–4 sentences. What the system does and its main parts. -->
+Cat Roster is a single-user CLI that keeps a roster of cats (name, breed,
+personality, favorite activities, drama level). Today the CLI (`src/index.ts`)
+prints a small sample roster from the domain model (`src/cat.ts`); the real
+commands (add / list / show) and JSON persistence are planned.
 
 ## Components
 
-<!-- TODO(project): Replace with real components. -->
-
 ```mermaid
 flowchart LR
-    UI["UI"] --> SVC["Service / API layer"]
-    SVC --> DB[("Database")]
+    CLI["CLI (src/index.ts)"] --> DOM["Domain model (src/cat.ts)"]
+    DOM --> FILE[("roster.json — planned")]
 ```
 
 ## Modules
 
 | Module | Path | Responsibility | Depends on |
 | ------ | ---- | -------------- | ---------- |
-| <!-- TODO(project) --> | | | |
+| CLI entry | `src/index.ts` | Builds and prints the roster | `src/cat.ts` |
+| Cat model | `src/cat.ts` | `Cat` type, `catSummary()`, `rosterSummary()` | — |
+| Tests | `test/cat.test.ts` | Vitest coverage for the model | `src/cat.ts` |
 
 ## Key flows
 
-Sequence diagrams for the 2–5 most important execution paths (call chains).
-
-<!-- TODO(project): Replace with a real flow. -->
+Run the CLI:
 
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant S as Service
-    participant D as Database
-    U->>S: request
-    S->>D: query
-    D-->>S: rows
-    S-->>U: response
+    participant C as CLI
+    participant M as Cat model
+    U->>C: node dist/index.js
+    C->>M: rosterSummary(cats)
+    M-->>C: formatted lines
+    C-->>U: printed roster
 ```
 
 ## Change impact map
@@ -53,8 +54,12 @@ Add a row whenever:
 
 | If you change… | Also check / update… | Why | Guarded by test |
 | -------------- | -------------------- | --- | --------------- |
-| _Example: a DB table's columns_ | _Serializers, migrations, `docs` schema section_ | _Serializers map columns by name_ | _`tests/test_serializers`_ |
+| `Cat` fields in `src/cat.ts` | `catSummary`, `rosterSummary`, sample roster in `src/index.ts` | Summary text and samples embed field values | `test/cat.test.ts` |
+| Module layout of `src/` or `test/` | `AGENTS.md` *Where things live*, `README.md` layout | Both tables mirror the layout | — |
+| Package manager / test script | `AGENTS.md` *Commands*, `README.md` | Commands are duplicated in both | — |
 
 ## Data
 
-<!-- TODO(project): Database choice, where the schema/migrations live, key tables. -->
+No database. The roster is in-memory, built from a hard-coded sample; JSON file
+persistence (`data/roster.json`) is planned. The schema lives with the `Cat`
+type in `src/cat.ts`.

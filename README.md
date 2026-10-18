@@ -1,47 +1,66 @@
-# Project Template
+# Cat Roster
 
-A lightweight, stack-agnostic starting point for solo projects built with AI agents
-(Antigravity, OpenCode, VS Code). No servers or databases are needed for the
-workflow itself. Everything is markdown, git, and GitHub.
+A TypeScript CLI for tracking the cats in your household: **name, breed,
+personality, favorite activities, and drama level**.
 
-## What's in it
+No servers, no database. The roster is an in-memory model, with JSON file
+persistence planned. Everything runs from the command line.
 
-| Path | Purpose |
-| ---- | ------- |
-| `AGENTS.md` | Agent onboarding: stack, commands, hard rules. Read automatically by most agent tools. |
-| `docs/progress.md` | Current state, next steps, known gotchas, log. |
-| `docs/changes/` | Per-branch doc fragments, so parallel PRs don't conflict on docs. |
-| `docs/architecture.md` | Components, key flows (Mermaid), **change impact map**. |
-| `docs/workflow.md` | One-agent and parallel-agent workflow, with diagram. |
-| `docs/adr/` | Architecture Decision Records. |
-| `.agents/skills/` | `plan` -> `build` -> `review` -> `sync-docs`, plus `merge` and `consolidate-docs`. |
-| `.github/` | PR and issue templates that mirror the workflow. |
-| `scripts/agent-worktree.ps1` | Isolated worktree and branch per agent, for parallel work. |
+Built for a solo developer working with AI agents — the repo ships the
+`plan -> build -> review -> sync-docs` workflow and a set of agent skills to
+run it.
 
-## Starting a new project from this template
+## Stack
 
-1. Copy the folder, or mark the GitHub repo as a **Template repository** and use
-   "Use this template".
-2. Find every placeholder and fill it in:
-   ```powershell
-   git grep -n "TODO(project)"
-   ```
-3. Write ADR `0002` for your stack/database choice (`0001` is the workflow itself).
-4. Protect `main` on GitHub (Settings -> Branches -> require PR before merging).
-5. Optional: create a GitHub Projects board linked to the repo as your kanban.
+- **Node 22+** (ESM), **TypeScript** (strict) — see [ADR 0002](docs/adr/0002-stack-choice.md).
+- **Vitest** for tests, **npm** for packages.
+
+## Quick start
+
+```powershell
+npm install
+npm start        # builds and runs the CLI
+```
+
+## Commands
+
+| Task             | Command                                  |
+| ---------------- | ---------------------------------------- |
+| Install          | `npm install`                            |
+| Run              | `npm start`                              |
+| Build            | `npm run build`                          |
+| Test (all)       | `npm test`                               |
+| Test (one file)  | `npx vitest run test/cat.test.ts`        |
+| Typecheck        | `npm run typecheck`                      |
+
+## Repo layout
+
+| Path                     | What                                                        |
+| ------------------------ | ----------------------------------------------------------- |
+| `src/`                   | CLI entry (`index.ts`) and domain model (`cat.ts`)          |
+| `test/`                  | Vitest tests, one file per module                           |
+| `AGENTS.md`              | Agent onboarding: stack, commands, hard rules.              |
+| `docs/`                  | Progress, architecture, workflow, ADRs, per-branch fragments |
+| `.agents/skills/`        | `plan` -> `build` -> `review` -> `sync-docs`, plus `merge`, `consolidate-docs` |
+| `scripts/`               | `agent-worktree.ps1` for parallel agents                    |
+
+## Status
+
+- [x] Scaffold: TypeScript + Vitest, docs filled in, ADR 0002 (stack choice)
+- [ ] Finalize the cat model (fields, defaults, validation)
+- [ ] CLI commands: add / list / show
+- [ ] JSON persistence (`data/roster.json`)
 
 ## Day-to-day
 
-- **One agent:** Open the repo and ask it to plan an issue. It follows the skills.
-- **Two or three agents:** Run `.\scripts\agent-worktree.ps1 -Name <issue#>-<name>`
-  once per agent and open each worktree in its own window. Have each agent plan,
-  then ask one agent to compare the plans and split them into waves. Each agent
-  opens a PR; a `merge` agent prepares them one at a time; you merge.
-  Full flow: [`docs/workflow.md`](docs/workflow.md).
-- **Docs:** Run `consolidate-docs` now and then to fold `docs/changes/` into the master docs.
-- **Review with a second agent:** Ask a separate agent to run the `review` skill on the PR.
+- **One agent:** open the repo and ask it to plan an issue. It follows the skills.
+- **Two or three agents:** run `.\scripts\agent-worktree.ps1 -Name <issue#>-<name>`
+  once per agent, have each agent plan, then compare the plans and split into
+  waves. Full flow: [`docs/workflow.md`](docs/workflow.md).
+- **Docs:** run `consolidate-docs` to fold `docs/changes/` into the master docs.
+- **Review:** ask a second agent to run the `review` skill on a PR.
 
-## When to outgrow this
+## Decisions
 
-Add heavier tooling (a code graph, a custom orchestrator) only if agents keep
-missing context **even with** an up-to-date impact map and a passing test suite.
+- [ADR 0001](docs/adr/0001-parallel-agents-workflow.md) — parallel-agents workflow.
+- [ADR 0002](docs/adr/0002-stack-choice.md) — stack: Node + TypeScript + Vitest.
