@@ -69,10 +69,14 @@ node dist/index.js add Miso --breed Tabby --personality "sweet chaos" --activiti
 
 ## Status
 
-- [x] Scaffold: TypeScript + Vitest, docs filled in, ADR 0002 (stack choice)
-- [x] Cat model: fields, defaults, validation (`parseDramaLevel`, `makeCat`)
-- [x] CLI commands: add / list / show (in-memory, resets each run)
-- [ ] JSON persistence (`data/roster.json`)
+| Item | Status |
+| ---- | ------ |
+| Scaffold: TypeScript + Vitest, docs filled in, ADR 0002 (stack choice) | Done |
+| Cat model: fields, defaults, validation (`parseDramaLevel`, `makeCat`) | Done |
+| CLI commands: add / list / show (in-memory, resets each run) | Done |
+| JSON persistence (`data/roster.json`) | Planned |
+
+New items start with a blank Status until they're specced.
 
 ## Day-to-day
 
