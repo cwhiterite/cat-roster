@@ -7,15 +7,17 @@
 ## Overview
 
 Cat Roster is a single-user CLI that keeps a roster of cats (name, breed,
-personality, favorite activities, drama level). Today the CLI (`src/index.ts`)
-prints a small sample roster from the domain model (`src/cat.ts`); the real
-commands (add / list / show) and JSON persistence are planned.
+personality, favorite activities, drama level). The CLI entry (`src/index.ts`)
+dispatches parsed commands from `src/cli.ts` against the domain model
+(`src/cat.ts`). Commands: `add` / `list` / `show`. The roster is in-memory and
+resets each run; JSON persistence is planned.
 
 ## Components
 
 ```mermaid
 flowchart LR
-    CLI["CLI (src/index.ts)"] --> DOM["Domain model (src/cat.ts)"]
+    CLI["CLI entry (src/index.ts)"] --> CMD["Commands (src/cli.ts)"]
+    CMD --> DOM["Domain model (src/cat.ts)"]
     DOM --> FILE[("roster.json — planned")]
 ```
 
@@ -23,9 +25,10 @@ flowchart LR
 
 | Module | Path | Responsibility | Depends on |
 | ------ | ---- | -------------- | ---------- |
-| CLI entry | `src/index.ts` | Builds and prints the roster | `src/cat.ts` |
-| Cat model | `src/cat.ts` | `Cat` type, `catSummary()`, `rosterSummary()` | — |
-| Tests | `test/cat.test.ts` | Vitest coverage for the model | `src/cat.ts` |
+| CLI entry | `src/index.ts` | Parses argv and dispatches, prints result, sets exit code | `src/cli.ts` |
+| CLI layer | `src/cli.ts` | `parseCommand`, `execute`; `add`/`list`/`show`/`help` | `src/cat.ts` |
+| Cat model | `src/cat.ts` | `Cat`, `makeCat`, `parseDramaLevel`, `catSummary()` | — |
+| Tests | `test/cat.test.ts`, `test/cli.test.ts` | Vitest coverage for model and CLI | `src/cat.ts`, `src/cli.ts` |
 
 ## Key flows
 
@@ -34,12 +37,17 @@ Run the CLI:
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant C as CLI
+    participant C as CLI entry (index.ts)
+    participant P as CLI layer (cli.ts)
     participant M as Cat model
-    U->>C: node dist/index.js
-    C->>M: rosterSummary(cats)
-    M-->>C: formatted lines
-    C-->>U: printed roster
+    U->>C: node dist/index.js <command>
+    C->>P: parseCommand(argv)
+    P-->>C: command or error
+    C->>P: execute(command, roster)
+    P->>M: makeCat / catSummary / rosterSummary
+    M-->>P: result
+    P-->>C: output + exit code
+    C-->>U: stdout / stderr
 ```
 
 ## Change impact map
@@ -57,9 +65,11 @@ Add a row whenever:
 | `Cat` fields in `src/cat.ts` | `catSummary`, `rosterSummary`, sample roster in `src/index.ts` | Summary text and samples embed field values | `test/cat.test.ts` |
 | Module layout of `src/` or `test/` | `AGENTS.md` *Where things live*, `README.md` layout | Both tables mirror the layout | — |
 | Package manager / test script | `AGENTS.md` *Commands*, `README.md` | Commands are duplicated in both | — |
+| `Cat` fields / `makeCat` validation | `cli.ts` `parseAdd`, help text, README Usage examples | CLI builds cats from raw strings | `test/cli.test.ts` |
+| CLI command set | `src/index.ts` dispatcher, help text, README Usage | A command surfaces in three places | `test/cli.test.ts` |
 
 ## Data
 
-No database. The roster is in-memory, built from a hard-coded sample; JSON file
-persistence (`data/roster.json`) is planned. The schema lives with the `Cat`
-type in `src/cat.ts`.
+No database. The roster is in-memory and starts empty each run; `add` appends
+for the life of the process. JSON file persistence (`data/roster.json`) is
+planned. The schema lives with the `Cat` type in `src/cat.ts`.
