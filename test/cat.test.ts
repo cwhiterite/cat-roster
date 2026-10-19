@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { catSummary, makeCat, parseDramaLevel, rosterSummary, type Cat } from "../src/cat.js";
+import {
+  catSummary,
+  formatDrama,
+  makeCat,
+  parseDramaLevel,
+  rosterSummary,
+  type Cat,
+} from "../src/cat.js";
 
 const miso: Cat = {
   name: "Miso",
@@ -9,27 +16,39 @@ const miso: Cat = {
   dramaLevel: 4,
 };
 
+describe("formatDrama", () => {
+  it("renders masks and dots corresponding to drama level", () => {
+    expect(formatDrama(1)).toBe("🎭····");
+    expect(formatDrama(3)).toBe("🎭🎭🎭··");
+    expect(formatDrama(5)).toBe("🎭🎭🎭🎭🎭");
+  });
+});
+
 describe("catSummary", () => {
   it("includes name, breed, personality, activities, and drama level", () => {
     const summary = catSummary(miso);
     expect(summary).toContain("Miso");
     expect(summary).toContain("Tabby");
     expect(summary).toContain("sweet chaos");
-    expect(summary).toContain("knocking things off shelves");
+    expect(summary).toContain("🐾 knocking things off shelves");
     expect(summary).toContain("drama level 4/5");
+    expect(summary).toContain("🎭🎭🎭🎭·");
   });
 
-  it("joins multiple favorite activities", () => {
+  it("formats multiple favorite activities with paw bullets", () => {
     const busy: Cat = {
       ...miso,
       favoriteActivities: ["chipmunks", "boxes", "midnight zoomies"],
     };
-    expect(catSummary(busy)).toContain("chipmunks, boxes, midnight zoomies");
+    const summary = catSummary(busy);
+    expect(summary).toContain("🐾 chipmunks");
+    expect(summary).toContain("🐾 boxes");
+    expect(summary).toContain("🐾 midnight zoomies");
   });
 });
 
 describe("rosterSummary", () => {
-  it("renders one line per cat", () => {
+  it("renders a banner, divider, cats list, and summary stats", () => {
     const wasabi: Cat = {
       name: "Wasabi",
       breed: "Siamese",
@@ -37,10 +56,11 @@ describe("rosterSummary", () => {
       favoriteActivities: ["yelling at 5am"],
       dramaLevel: 2,
     };
-    const lines = rosterSummary([miso, wasabi]).split("\n");
-    expect(lines).toHaveLength(2);
-    expect(lines[0]).toContain("Miso");
-    expect(lines[1]).toContain("Wasabi");
+    const summary = rosterSummary([miso, wasabi]);
+    expect(summary).toContain("🐱 THE PURR-FECT ROSTER 🐱");
+    expect(summary).toContain("#1  Miso (Tabby)");
+    expect(summary).toContain("#2  Wasabi (Siamese)");
+    expect(summary).toContain("Total cats: 2 | Average drama level: 3.0/5");
   });
 
   it("handles an empty roster", () => {

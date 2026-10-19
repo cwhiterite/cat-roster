@@ -38,6 +38,9 @@ export async function runRepl(options: ReplOptions): Promise<void> {
     output.write(`${text}\n`);
   };
 
+  write("🐱 Welcome to Cat Roster!");
+  write("Type 'help' for commands, 'list' to view cats, or 'exit' to quit.\n");
+
   readline.prompt();
   for await (const raw of readline) {
     const line = raw.trim();
