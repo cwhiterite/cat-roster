@@ -92,4 +92,37 @@ describe("runRepl", () => {
     expect(output).toContain("(no cats yet)");
     expect(output).toContain("bye");
   });
+
+  it("edits and removes cats in an interactive session, saving on each mutation", async () => {
+    const existing: Cat[] = [
+      {
+        name: "Wasabi",
+        breed: "Siamese",
+        personality: "dignified",
+        favoriteActivities: ["yelling at 5am"],
+        dramaLevel: 2,
+      },
+    ];
+    const session = runSession(
+      [
+        'edit Wasabi --personality "loud diva" --drama 5',
+        "show Wasabi",
+        "remove Wasabi",
+        "list",
+        "exit",
+      ],
+      existing,
+    );
+    await session.promise;
+
+    const output = session.collect();
+    expect(output).toContain("updated Wasabi");
+    expect(output).toContain("loud diva");
+    expect(output).toContain("removed Wasabi");
+    expect(output).toContain("(no cats yet)");
+    expect(session.saves).toHaveLength(2);
+    expect(session.saves[0][0].personality).toBe("loud diva");
+    expect(session.saves[0][0].dramaLevel).toBe(5);
+    expect(session.saves[1]).toHaveLength(0);
+  });
 });
