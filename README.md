@@ -55,10 +55,13 @@ npm start -- show Miso
 
 Commands (identical in both modes):
 
-- `list` — one line per cat, or `(no cats yet)`.
-- `show <name>` — one cat's summary, case-insensitive name match.
+- `list` — formatted roster of cats, or `(no cats yet)`.
+- `show <name>` — detailed profile of a cat, case-insensitive name match.
 - `add <name> --breed <b> --personality <p> [--activities a,b] [--drama 1-5]` —
   drama defaults to 3; invalid input prints an error and is rejected.
+- `edit <name> [--name <n>] [--breed <b>] [--personality <p>] [--activities a,b] [--drama 1-5]` —
+  update any field of an existing cat.
+- `remove <name>` — remove a cat from the roster.
 - `help` — this usage text.
 
 In the interactive session, quoted values work: `add Miso --personality "sweet chaos"`.
@@ -83,6 +86,7 @@ In the interactive session, quoted values work: `add Miso --personality "sweet c
 | CLI commands: add / list / show | Done |
 | JSON persistence (`data/roster.json`) | Done |
 | Interactive REPL (`cat-roster` with no args) | Done |
+| CLI commands: edit / remove | Done |
 
 New items start with a blank Status until they're specced.
 
