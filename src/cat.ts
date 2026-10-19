@@ -8,20 +8,57 @@ export interface Cat {
   dramaLevel: 1 | 2 | 3 | 4 | 5;
 }
 
-/** One-line summary of a cat, with personality, activities, and drama. */
-export function catSummary(cat: Cat): string {
-  return (
-    `${cat.name} (${cat.breed}) — ${cat.personality}; ` +
-    `loves ${cat.favoriteActivities.join(", ")}; drama level ${cat.dramaLevel}/5`
-  );
+/** Visual drama bar: 🎭 for each drama level, · for remaining up to 5. */
+export function formatDrama(level: number): string {
+  return "🎭".repeat(level) + "·".repeat(5 - level);
 }
 
-/** Every cat in the roster, one line each, or a placeholder when empty. */
+/** Multi-line summary of a single cat with personality, drama, and activities. */
+export function catSummary(cat: Cat): string {
+  const header = `🐱 ${cat.name} (${cat.breed})`;
+  const personality = `   Personality: ${cat.personality}`;
+  const drama = `   Drama level: ${formatDrama(cat.dramaLevel)} (drama level ${cat.dramaLevel}/5)`;
+  const activities =
+    cat.favoriteActivities.length > 0
+      ? [
+          "   Favorite activities:",
+          ...cat.favoriteActivities.map((activity) => `     🐾 ${activity}`),
+        ].join("\n")
+      : "   Favorite activities: (none)";
+  return [header, personality, drama, activities].join("\n");
+}
+
+/** Rich formatted roster summary with banner, divider, cats list, and drama statistics. */
 export function rosterSummary(cats: readonly Cat[]): string {
   if (cats.length === 0) {
     return "(no cats yet)";
   }
-  return cats.map(catSummary).join("\n");
+
+  const divider = "=".repeat(50);
+  const header = ["🐱 THE PURR-FECT ROSTER 🐱", divider];
+
+  const catBlocks = cats.map((cat, i) => {
+    const num = `#${i + 1}  `;
+    const title = `${num}${cat.name} (${cat.breed})`;
+    const personality = `   Personality: ${cat.personality}`;
+    const drama = `   Drama level: ${formatDrama(cat.dramaLevel)} (${cat.dramaLevel}/5)`;
+    const activities =
+      cat.favoriteActivities.length > 0
+        ? [
+            "   Favorite activities:",
+            ...cat.favoriteActivities.map((activity) => `     🐾 ${activity}`),
+          ].join("\n")
+        : "   Favorite activities: (none)";
+    return [title, personality, drama, activities].join("\n");
+  });
+
+  const avg = cats.reduce((sum, c) => sum + c.dramaLevel, 0) / cats.length;
+  const footer = [
+    divider,
+    `Total cats: ${cats.length} | Average drama level: ${avg.toFixed(1)}/5`,
+  ];
+
+  return [...header, catBlocks.join("\n\n"), ...footer].join("\n");
 }
 
 /** Parses a drama level from user input, e.g. a CLI flag or raw JSON. */

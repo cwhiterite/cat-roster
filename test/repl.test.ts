@@ -86,6 +86,7 @@ describe("runRepl", () => {
     await session.promise;
 
     const output = session.collect();
+    expect(output).toContain("🐱 Welcome to Cat Roster!");
     expect(output).toContain('unknown command: "frobnicate"');
     expect(output).toContain("breed is required");
     expect(output).toContain("(no cats yet)");

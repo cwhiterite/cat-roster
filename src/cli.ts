@@ -1,4 +1,4 @@
-import { catSummary, makeCat, rosterSummary, type Cat } from "./cat.js";
+import { catSummary, formatDrama, makeCat, rosterSummary, type Cat } from "./cat.js";
 
 export type Command =
   | { kind: "add"; cat: Cat }
@@ -136,7 +136,7 @@ export function execute(command: Command, roster: readonly Cat[]): ExecuteResult
     }
     case "add":
       return {
-        output: `added ${command.cat.name} (drama level ${command.cat.dramaLevel}/5)`,
+        output: `added ${command.cat.name} 🐾 (drama level: ${formatDrama(command.cat.dramaLevel)} ${command.cat.dramaLevel}/5)`,
         roster: [...roster, command.cat],
         exitCode: 0,
       };
