@@ -8,20 +8,21 @@
 
 ## Current state
 
-- **Phase:** MVP CLI — `add` / `list` / `show` working on an in-memory roster
-- **Working:** —
+- **Phase:** Interactive REPL + JSON persistence (`data/roster.json`) + inspired formatting
+- **Working:** `add` / `list` / `show` / `help` via interactive REPL (`npm start`) or one-shot CLI commands; auto-persistence to `data/roster.json`
 - **In progress / broken:** —
 
 ## Next steps
 
-1. JSON persistence (`data/roster.json`) so `add` survives restarts.
-2. Optional: `edit` / `remove` commands.
-3. Protect `main` on GitHub once persistence lands.
+1. Optional: `edit` / `remove` commands.
+2. Protect `main` on GitHub.
 
 ## Known gotchas
 
 Things that bit us before. **Check here before "fixing" something that was already fixed.**
 
+- **Data path is relative to CWD** — run from the project root (`data/roster.json`), or adjust the path if the binary moves.
+- **Toughening `makeCat` rules later can make existing `data/roster.json` files fail to load** — validation runs on every load.
 - **Vitest transpiles TS without typechecking.** A type error can pass `npm test`
   and fail `npm run build`. Always run both.
 - **ESM relative imports need `.js` extensions** in source (`import "./cat.js"`),
@@ -35,6 +36,30 @@ Things that bit us before. **Check here before "fixing" something that was alrea
 ## Log
 
 <!-- Copy this block for each entry. Keep it to a few lines. -->
+
+### 2026-10-19: REPL formatting & sample data (PR #6, branch `agent/repl-cats-formatting`)
+
+- **Did:** Replaced `data/roster.json` with 5 sample cats; added `formatDrama` visual
+  mask indicator; updated `catSummary` and `rosterSummary` with multi-line layout, paw
+  bullets (`🐾`), banner header, and drama statistics; added welcome banner to `runRepl`;
+  expanded test suite (38 tests).
+- **Decided:** Output formatting matches the light-hearted theme across both REPL and
+  one-shot commands while preserving the `Cat` schema.
+- **Broke / fixed:** Missing `vitest` imports in `test/cat.test.ts` caught and fixed on attempt 1.
+- **Next:** Optional `edit` / `remove` commands.
+
+### 2026-10-18: Interactive REPL & JSON persistence (PR #5, branch `agent/repl-persistence`)
+
+- **Did:** Added `src/storage.ts` (load/save `data/roster.json`, validation on load)
+  and `src/repl.ts` (quote-aware tokenizer + `cat>` session on `node:readline/promises`);
+  `src/index.ts` opens REPL with no args and loads/saves in one-shot mode; `data/roster.json`
+  gitignored; 12 new tests.
+- **Decided:** Persistence is CWD-relative `data/roster.json`; load validates every stored
+  cat via `makeCat` and fails loud on corrupt/hand-edited files; REPL saves after each mutation;
+  zero new dependencies (`readline/promises`, `fs` are Node built-ins).
+- **Broke / fixed:** `npm start` opens REPL instead of printing help (`npm start -- help`
+  still works); one-shot `list` shows saved roster.
+- **Next:** REPL formatting and sample cat data.
 
 ### 2026-10-18: In-memory CLI commands (PR #2, branch `agent/cat-model-cli`)
 
