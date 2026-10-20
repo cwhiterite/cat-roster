@@ -149,11 +149,11 @@ if ($WhatIf) {
     Write-Host "  5. git fetch --prune"
 
     if ($prBody -and $prBody.Trim()) {
-        Write-Host "`n+-- PR Description " + ("-" * 50) -ForegroundColor DarkGray
+        Write-Host ("`n+-- PR Description " + ("-" * 50)) -ForegroundColor DarkGray
         foreach ($line in ($prBody -split "`r?`n")) {
             Write-Host "| $line"
         }
-        Write-Host ("-" * 69) + "`n" -ForegroundColor DarkGray
+        Write-Host ("+-" + ("-" * 67) + "`n") -ForegroundColor DarkGray
     }
     return
 }
