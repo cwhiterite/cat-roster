@@ -73,3 +73,8 @@ imports use `.js` extensions (NodeNext), e.g. `import "./cat.js"`. Tests live
 in `test/`, one file per module, named `*.test.ts`. No linter yet —
 `npm run typecheck` is the gate; keep formatting tidy. Vitest transpiles without
 typechecking, so run both `npm test` and `npm run typecheck`.
+
+When creating a PR, always fill out `.github/pull_request_template.md` (via
+`gh pr create --body-file <temp-file>` or `gh pr create --fill`). Never pass
+inline markdown containing backticks to `--body "..."` (PowerShell interprets
+backticks as escape characters and mangles code spans).
