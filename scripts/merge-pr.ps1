@@ -51,7 +51,7 @@ foreach ($line in ($worktreeListRaw -split "`r?`n")) {
     }
     elseif ($line -match '^branch\s+refs/heads/(.+)$') {
         $bName = $Matches[1].Trim()
-        if ($currentWtPath) {
+        if ($currentWtPath -and ($currentWtPath.Replace('\', '/').TrimEnd('/') -ne $primaryWorktree.Replace('\', '/').TrimEnd('/'))) {
             $branchWorktreeMap[$bName] = $currentWtPath
         }
     }
