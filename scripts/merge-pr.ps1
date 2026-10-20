@@ -103,7 +103,7 @@ if (-not $targetPr) {
 Write-Host "Fetching PR details for '$targetPr'..." -ForegroundColor Cyan
 $oldEAP = $ErrorActionPreference
 $ErrorActionPreference = "Continue"
-$prJson = gh pr view $targetPr --json number,title,headRefName,state 2>$null
+$prJson = gh pr view $targetPr --json number,title,headRefName,state,body,url 2>$null
 $viewExit = $LASTEXITCODE
 $ErrorActionPreference = $oldEAP
 
@@ -117,6 +117,8 @@ $prNumber = $prInfo.number
 $prTitle = $prInfo.title
 $branchName = $prInfo.headRefName
 $state = $prInfo.state
+$prUrl = $prInfo.url
+$prBody = $prInfo.body
 
 if ($state -ne "OPEN") {
     Write-Host "PR #$prNumber is already $state." -ForegroundColor Yellow
@@ -125,6 +127,9 @@ if ($state -ne "OPEN") {
 
 if ($WhatIf) {
     Write-Host "`n[WhatIf] Target PR:       #$prNumber - '$prTitle'" -ForegroundColor Magenta
+    if ($prUrl) {
+        Write-Host "[WhatIf] URL:             $prUrl" -ForegroundColor Magenta
+    }
     Write-Host "[WhatIf] Branch:          $branchName" -ForegroundColor Magenta
     Write-Host "[WhatIf] Strategy:        --$Strategy" -ForegroundColor Magenta
     if ($branchWorktreeMap.ContainsKey($branchName)) {
@@ -142,6 +147,14 @@ if ($WhatIf) {
     }
     Write-Host "  4. git branch -d $branchName"
     Write-Host "  5. git fetch --prune"
+
+    if ($prBody -and $prBody.Trim()) {
+        Write-Host ("`n+-- PR Description " + ("-" * 50)) -ForegroundColor DarkGray
+        foreach ($line in ($prBody -split "`r?`n")) {
+            Write-Host "| $line"
+        }
+        Write-Host ("+-" + ("-" * 67) + "`n") -ForegroundColor DarkGray
+    }
     return
 }
 
