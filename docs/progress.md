@@ -8,14 +8,13 @@
 
 ## Current state
 
-- **Phase:** Interactive REPL + JSON persistence (`data/roster.json`) + inspired formatting
-- **Working:** `add` / `list` / `show` / `help` via interactive REPL (`npm start`) or one-shot CLI commands; auto-persistence to `data/roster.json`
+- **Phase:** Interactive REPL + full CRUD (`add`, `list`, `show`, `edit`, `remove`) + JSON persistence (`data/roster.json`) + formatting
+- **Working:** `add` / `list` / `show` / `edit` / `remove` / `help` via interactive REPL (`npm start`) or one-shot CLI commands; auto-persistence to `data/roster.json`
 - **In progress / broken:** —
 
 ## Next steps
 
-1. Optional: `edit` / `remove` commands.
-2. Protect `main` on GitHub.
+1. Protect `main` on GitHub (branch protection rules).
 
 ## Known gotchas
 
@@ -36,6 +35,27 @@ Things that bit us before. **Check here before "fixing" something that was alrea
 ## Log
 
 <!-- Copy this block for each entry. Keep it to a few lines. -->
+
+### 2026-10-19: PR template conventions (PR #9, branch `agent/pr-template-convention`)
+
+- **Did:** Updated `## Conventions` in `AGENTS.md` to instruct agents to fill out
+  `.github/pull_request_template.md` (via `--body-file <temp-file>` or `gh pr create --fill`)
+  when creating PRs, avoiding PowerShell backtick mangling.
+- **Decided:** Formalize PR creation conventions in `AGENTS.md` for consistent PR descriptions.
+- **Broke / fixed:** —
+- **Next:** —
+
+### 2026-10-19: Edit and remove commands (PR #8, branch `agent/edit-remove-commands`)
+
+- **Did:** Added `edit` and `remove` (with `rm`/`delete` aliases) commands to
+  `src/cli.ts`; supported partial updates via `--name`, `--breed`, `--personality`,
+  `--activities`, and `--drama` with collision detection and validation via `makeCat`;
+  updated CLI help text and `README.md` Usage; added unit and REPL tests (51 passing).
+- **Decided:** Both interactive REPL and one-shot modes inherit `edit` and `remove`
+  via `execute`, persisting mutations to `data/roster.json`; renaming checks for
+  existing cat name collisions.
+- **Broke / fixed:** —
+- **Next:** Optional: protect `main` on GitHub.
 
 ### 2026-10-19: REPL formatting & sample data (PR #6, branch `agent/repl-cats-formatting`)
 

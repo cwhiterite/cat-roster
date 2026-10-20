@@ -11,7 +11,7 @@ personality, favorite activities, drama level). The CLI entry (`src/index.ts`)
 launches an interactive REPL (`src/repl.ts`) when called with no arguments, or
 dispatches parsed commands from `src/cli.ts` in one-shot mode. Both modes load
 and persist data to `data/roster.json` via `src/storage.ts` using the domain
-model (`src/cat.ts`). Commands: `add` / `list` / `show` / `help`.
+model (`src/cat.ts`). Commands: `add` / `list` / `show` / `edit` / `remove` / `help`.
 
 ## Components
 
@@ -34,7 +34,7 @@ flowchart LR
 | CLI entry | `src/index.ts` | Dispatches to REPL (no args) or one-shot commands, orchestrates storage | `src/cli.ts`, `src/repl.ts`, `src/storage.ts` |
 | REPL session | `src/repl.ts` | Interactive session, prompt `cat>`, tokenizes args, auto-saves on mutation | `src/cli.ts`, `src/cat.ts` |
 | Storage layer | `src/storage.ts` | Loads and saves `data/roster.json`, validates cats via `makeCat` | `src/cat.ts` |
-| CLI layer | `src/cli.ts` | `parseCommand`, `execute`; `add`/`list`/`show`/`help` | `src/cat.ts` |
+| CLI layer | `src/cli.ts` | `parseCommand`, `execute`; `add`/`list`/`show`/`edit`/`remove`/`help` | `src/cat.ts` |
 | Cat model | `src/cat.ts` | `Cat`, `makeCat`, `parseDramaLevel`, `formatDrama`, `catSummary`, `rosterSummary` | — |
 | Tests | `test/cat.test.ts`, `test/cli.test.ts`, `test/storage.test.ts`, `test/repl.test.ts` | Vitest coverage for model, CLI, storage, and REPL | `src/cat.ts`, `src/cli.ts`, `src/storage.ts`, `src/repl.ts` |
 
@@ -111,6 +111,7 @@ Add a row whenever:
 | Module layout of `src/` or `test/` | `AGENTS.md` *Where things live*, `README.md` layout | Both tables mirror the layout | — |
 | Package manager / test script | `AGENTS.md` *Commands*, `README.md` | Commands are duplicated in both | — |
 | `Cat` fields / `makeCat` validation | `cli.ts` `parseAdd`, help text, README Usage examples | CLI builds cats from raw strings | `test/cli.test.ts` |
+| `Command` set / flags | `src/cli.ts` help text, `README.md` Usage | Commands and options are documented in both places | `test/cli.test.ts` |
 | CLI command set | `src/index.ts` dispatcher, help text, README Usage | A command surfaces in three places | `test/cli.test.ts` |
 
 ## Data
