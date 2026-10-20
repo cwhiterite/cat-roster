@@ -20,6 +20,8 @@
 
 Things that bit us before. **Check here before "fixing" something that was already fixed.**
 
+- **PowerShell NativeCommandError with external CLIs** — Under `$ErrorActionPreference = "Stop"`, commands writing to stderr (such as `gh pr view` when no PR matches) trigger terminating exceptions. Wrap or lower `$ErrorActionPreference` to `"Continue"` during stderr probes.
+- **Git worktree branch deletion lock** — `git branch -d <branch>` fails if that branch is still checked out in an active worktree. Check `git worktree list` and remove the worktree before deleting the local branch.
 - **Data path is relative to CWD** — run from the project root (`data/roster.json`), or adjust the path if the binary moves.
 - **Toughening `makeCat` rules later can make existing `data/roster.json` files fail to load** — validation runs on every load.
 - **Vitest transpiles TS without typechecking.** A type error can pass `npm test`
@@ -35,6 +37,13 @@ Things that bit us before. **Check here before "fixing" something that was alrea
 ## Log
 
 <!-- Copy this block for each entry. Keep it to a few lines. -->
+
+### 2026-10-20: Merge script & workflow rules (PR #11, branch `agent/merge-script-and-workflow-rules`)
+
+- **Did:** Added `scripts/merge-pr.ps1` for automating post-PR merge ritual (GitHub merge, branch deletion, linked worktree cleanup, and fragment checks) with `-WhatIf` and `-Strategy` flags; harmonized `.agents/skills/plan/SKILL.md` Fast lane policy with `AGENTS.md` Hard Rule 4 (exempting only docs/comment/typo edits from full test runs); documented `merge-pr.ps1` in `AGENTS.md` and `.agents/skills/merge/SKILL.md`; added Rules 9–11 and Status/Code/PR conventions in `AGENTS.md`.
+- **Decided:** `merge-pr.ps1` is dedicated as a human convenience tool, preserving agent boundary rules; script uses `git worktree list --porcelain` to detect and safely clean up linked worktrees before branch deletion.
+- **Broke / fixed:** Fixed PowerShell native command stderr handling during `gh` queries under `$ErrorActionPreference = "Stop"` so absent PRs do not produce terminating NativeCommandError exceptions; excluded primary worktree from branch removal map.
+- **Next:** Protect `main` on GitHub (branch protection rules).
 
 ### 2026-10-19: PR template conventions (PR #9, branch `agent/pr-template-convention`)
 
