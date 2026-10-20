@@ -36,7 +36,7 @@ See ADR 0002 for the stack decision.
 | `docs/workflow.md`       | One-agent and parallel-agent flow (diagram).                |
 | `docs/adr/`              | Decisions and the reasoning behind them.                    |
 | `.agents/skills/`        | `plan`, `build`, `review`, `sync-docs`, `merge`, `consolidate-docs`. |
-| `scripts/`               | Helper scripts (e.g. `agent-worktree.ps1`).                 |
+| `scripts/`               | Helper scripts (e.g. `agent-worktree.ps1`, `merge-pr.ps1`). |
 | `src/`                   | Source code: CLI entry (`index.ts`), domain model (`cat.ts`). |
 | `test/`                  | Vitest tests, one file per module (`cat.test.ts`).          |
 
@@ -58,23 +58,28 @@ load skills automatically, open and follow the file directly.
    interface: search for its callers and check the *Change impact map* in
    `docs/architecture.md` and any impact rows in `docs/changes/`.
 3. **Every bug fix gets a regression test** that fails before the fix and passes after.
-4. **Run the full test suite**, not just new tests, before calling anything done.
+4. **Run the full test suite**, not just new tests, before calling anything done (except docs-only / comment edits).
 5. **Max 3 fix attempts** on a failing test. Then stop, summarize what you tried, and ask.
 6. **Don't undo a previous fix** without checking *Known gotchas* in `docs/progress.md`
    and `docs/changes/`. If you're about to reverse earlier behavior, say so explicitly.
 7. **Sync docs** (`sync-docs` skill) before ending any turn that changed code. On a
    branch, write only your fragment `docs/changes/<branch>.md`; never edit shared docs.
 8. **No new dependencies** without stating why. Structural choices get an ADR.
+9. **Pin major dependencies** at scaffold time. Toolchain major updates often silently change defaults (e.g. compiler flags, auto-included types).
+10. **Align before assuming:** If requirements, output formats, or edge cases are unclear, ask. Don't assume or hide confusion; surface trade-offs early.
+11. **Minimal implementation:** Write the simplest code that completely solves the problem. Avoid speculative features, premature abstractions, and unrequested complexity.
 
 ## Conventions
 
-ESM (`"type": "module"`), strict TypeScript, named exports only. Relative
+**Status:** `docs/progress.md` is the single source of truth for project status and roadmap. Link to it; do not duplicate status tables in `README.md`.
+
+**Code:** ESM (`"type": "module"`), strict TypeScript, named exports only. Relative
 imports use `.js` extensions (NodeNext), e.g. `import "./cat.js"`. Tests live
 in `test/`, one file per module, named `*.test.ts`. No linter yet —
 `npm run typecheck` is the gate; keep formatting tidy. Vitest transpiles without
 typechecking, so run both `npm test` and `npm run typecheck`.
 
-When creating a PR, always fill out `.github/pull_request_template.md` (via
+**PRs:** When creating a PR, always fill out `.github/pull_request_template.md` (via
 `gh pr create --body-file <temp-file>` or `gh pr create --fill`). Never pass
 inline markdown containing backticks to `--body "..."` (PowerShell interprets
 backticks as escape characters and mangles code spans).

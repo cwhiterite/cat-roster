@@ -43,14 +43,16 @@ description: >-
    feature logic here: report it and send the PR back to its owner.
 6. **Push** with a normal `git push`. The PR updates itself.
 7. **Report:** "PR #N is up to date with main, tests pass, conflicts resolved:
-   … Ready for you to merge." Wait for the human to merge it.
+   … Ready for you to merge (e.g. via `.\scripts\merge-pr.ps1 N`)." Wait for the human to merge it.
 8. **Next PR.** After each merge, `main` has moved, so repeat from step 2 for the
    next PR.
 
-## After the queue is empty
+## After the queue is empty (Merge ritual)
 
-- Suggest running `consolidate-docs`.
-- Clean up each merged worktree and branch:
+Human operators can use `.\scripts\merge-pr.ps1 <pr-number>` to automate GitHub PR merge, branch deletion, worktree removal, and fragment checks in one step. If doing it manually:
+
+1. **Check for doc fragments:** If any files exist in `docs/changes/` (other than `README.md` and `_template.md`), **prompt the user to run `consolidate-docs`** immediately so master docs and architecture do not lag behind shipped features.
+2. **Clean up merged worktrees & branches:**
   ```powershell
   .\scripts\agent-worktree.ps1 -Name <name> -Remove
   git branch -d agent/<name>
